@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Mine-imator
+Comment=Create 3D animations using Minecraft assets
+Exec=mine-imator
+Icon=com.nestor_churin.MineImator
+Categories=Graphics;3DGraphics;
+Terminal=false
+StartupWMClass=Mine-imator

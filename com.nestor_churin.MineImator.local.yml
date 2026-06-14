@@ -1,0 +1,57 @@
+id: com.nestor_churin.MineImator
+runtime: org.kde.Platform
+runtime-version: '5.15-25.08'
+sdk: org.kde.Sdk
+command: mine-imator
+rename-icon: com.nestor_churin.MineImator
+finish-args:
+  - --socket=x11
+  - --socket=pulseaudio
+  - --device=dri
+  - --share=ipc
+  - --filesystem=host
+
+modules:
+  - name: libzip
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DENABLE_COMMONMARK=OFF
+      - -DENABLE_GNUTLS=OFF
+      - -DENABLE_MBEDTLS=OFF
+      - -DENABLE_OPENSSL=OFF
+      - -DBUILD_REGRESS=OFF
+      - -DBUILD_EXAMPLES=OFF
+      - -DBUILD_DOC=OFF
+    sources:
+      - type: archive
+        url: https://github.com/nih-at/libzip/releases/download/v1.10.1/libzip-1.10.1.tar.gz
+        sha256: 9669ae5dfe3ac5b3897536dc8466a874c8cf2c0e3b1fdd08d75b273884299363
+
+  - name: mine-imator
+    buildsystem: simple
+    build-commands:
+      # Compile CppProject
+      - cd CppProject && cmake -DCMAKE_INSTALL_PREFIX=/app -DCMAKE_PREFIX_PATH=/app -DUSE_SYSTEM_LIBS=ON -DCMAKE_BUILD_TYPE=Release .
+      - cd CppProject && make -j$(nproc)
+      
+      # Install binaries & wrappers
+      - install -d /app/bin
+      - install -m 755 CppProject/Mine-imator /app/bin/Mine-imator
+      - install -m 755 flatpak/mine-imator.sh /app/bin/mine-imator
+      
+      # Install assets (Data & Particles folders)
+      - cp -r GmProject/datafiles/Data /app/bin/Data
+      - cp -r GmProject/datafiles/Particles /app/bin/Particles
+      
+      # Install metadata and icons
+      - install -d /app/share/applications
+      - install -p -m 644 flatpak/com.nestor_churin.MineImator.desktop /app/share/applications/com.nestor_churin.MineImator.desktop
+      
+      - install -d /app/share/metainfo
+      - install -p -m 644 flatpak/com.nestor_churin.MineImator.metainfo.xml /app/share/metainfo/com.nestor_churin.MineImator.metainfo.xml
+      
+      - install -d /app/share/icons/hicolor/512x512/apps
+      - install -p -m 644 GmProject/options/mac/icon512.png /app/share/icons/hicolor/512x512/apps/com.nestor_churin.MineImator.png
+    sources:
+      - type: dir
+        path: .

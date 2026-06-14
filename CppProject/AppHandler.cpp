@@ -163,6 +163,52 @@ namespace CppProject
 			keyMap[Qt::Key_Tab] = vk_tab;
 			keyMap[Qt::Key_Up] = vk_up;
 
+		#ifndef OS_WINDOWS
+		#ifndef OS_MAC
+			// Map physical key positions on Linux (X11 scan codes) to standard virtual key codes
+			// QWERTY row
+			scanCodeMap[24] = 81; // Q
+			scanCodeMap[25] = 87; // W
+			scanCodeMap[26] = 69; // E
+			scanCodeMap[27] = 82; // R
+			scanCodeMap[28] = 84; // T
+			scanCodeMap[29] = 89; // Y
+			scanCodeMap[30] = 85; // U
+			scanCodeMap[31] = 73; // I
+			scanCodeMap[32] = 79; // O
+			scanCodeMap[33] = 80; // P
+			// ASDF row
+			scanCodeMap[38] = 65; // A
+			scanCodeMap[39] = 83; // S
+			scanCodeMap[40] = 68; // D
+			scanCodeMap[41] = 70; // F
+			scanCodeMap[42] = 71; // G
+			scanCodeMap[43] = 72; // H
+			scanCodeMap[44] = 74; // J
+			scanCodeMap[45] = 75; // K
+			scanCodeMap[46] = 76; // L
+			// ZXCV row
+			scanCodeMap[52] = 90; // Z
+			scanCodeMap[53] = 88; // X
+			scanCodeMap[54] = 67; // C
+			scanCodeMap[55] = 86; // V
+			scanCodeMap[56] = 66; // B
+			scanCodeMap[57] = 78; // N
+			scanCodeMap[58] = 77; // M
+			// Digits
+			scanCodeMap[10] = 49; // 1
+			scanCodeMap[11] = 50; // 2
+			scanCodeMap[12] = 51; // 3
+			scanCodeMap[13] = 52; // 4
+			scanCodeMap[14] = 53; // 5
+			scanCodeMap[15] = 54; // 6
+			scanCodeMap[16] = 55; // 7
+			scanCodeMap[17] = 56; // 8
+			scanCodeMap[18] = 57; // 9
+			scanCodeMap[19] = 48; // 0
+		#endif
+		#endif
+
 		#if API_D3D11
 			// Initialize Direct3D graphics
 			GFX->Init();
@@ -458,6 +504,13 @@ namespace CppProject
 			case Qt::Key_Shift: keys = { vk_shift, vk_rshift, vk_lshift }; break;
 			default:
 			{
+				#ifndef OS_WINDOWS
+				#ifndef OS_MAC
+				if (scanCodeMap.contains(event->nativeScanCode())) // Map physical layout
+					keys = { scanCodeMap.value(event->nativeScanCode()) };
+				else
+				#endif
+				#endif
 				if (keyMap.contains(event->key())) // Mapped key
 					keys = { keyMap.value(event->key()) };
 				else

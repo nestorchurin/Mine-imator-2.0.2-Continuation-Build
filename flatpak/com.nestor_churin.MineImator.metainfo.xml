@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.nestor_churin.MineImator</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Mine-imator</name>
+  <summary>A 3D animation creator using Minecraft assets</summary>
+  <description>
+    <p>
+      Mine-imator is an easy-to-use 3D animation software designed for creating videos using assets from the game Minecraft.
+    </p>
+  </description>
+  <launchable type="desktop-id">com.nestor_churin.MineImator.desktop</launchable>
+  <url type="homepage">https://github.com/mbandersmc/Mine-imator-2.0.2-Continuation-Build</url>
+  <content_rating type="oars-1.1" />
+</component>

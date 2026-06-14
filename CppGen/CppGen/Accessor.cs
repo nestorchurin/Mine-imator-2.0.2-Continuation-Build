@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace CppGen
@@ -22,6 +22,7 @@ namespace CppGen
 		public Expression AssignExpr = null;
 		public bool NeedLtZero = false;
 		public bool AppToId = true;
+		public Variable ResolvedVar = null;
 
 		public static bool ResolveUnknownMapTypes = false;
 		public static bool ResolveUnknownScope = false;
@@ -315,6 +316,8 @@ namespace CppGen
 					if (var == null) // Declare new
 						var = Program.DeclareVariable(scope.CurrentInChain, Name, ResolvedType, Func, scope.Location, Line, funcUpdateScope);
 
+					ResolvedVar = var;
+
 					// Try to find container type
 					if (ArrayAccessors.Count > 0)
 					{
@@ -542,6 +545,7 @@ namespace CppGen
 				cpp = NextInChain.ToCpp(scope.NextInChain(nextInChainScope));
 				NeedLtZero = NextInChain.NeedLtZero;
 				WrittenType = NextInChain.WrittenType;
+				LastToCppScope = null;
 				return cpp;
 			}
 
@@ -961,6 +965,50 @@ namespace CppGen
 				return Program.Functions[Name];
 
 			return null;
+		}
+
+		public override DataType.CppType GetResolvedCppType()
+		{
+			if (ResolvedTypeCpp != DataType.CppType.Void)
+				return ResolvedTypeCpp;
+
+			// Find the last element in the chain
+			Accessor last = this;
+			while (last.NextInChain != null)
+				last = last.NextInChain;
+
+			if (last.CallParameters != null)
+			{
+				if (Program.Functions.ContainsKey(last.Name))
+					return Program.Functions[last.Name].GetReturnType().cppType;
+				
+				foreach (Object obj in Program.Objects.Values)
+					if (obj.InstanceFunctions.ContainsKey(last.Name))
+						return obj.InstanceFunctions[last.Name].GetReturnType().cppType;
+			}
+
+			DataType.CppType type = DataType.CppType.VarType;
+			if (last.ResolvedVar != null)
+				type = last.ResolvedVar.Type.cppType;
+			else if (last.ResolvedType != null)
+				type = last.ResolvedType.cppType;
+			else if (ResolvedType != null)
+				type = ResolvedType.cppType;
+
+			if (type == DataType.CppType.VarType)
+			{
+				foreach (Object obj in Program.Objects.Values)
+				{
+					if (obj.InstanceVars.ContainsKey(last.Name))
+					{
+						DataType.CppType t = obj.InstanceVars[last.Name].Type.cppType;
+						if (t != DataType.CppType.VarType)
+							return t;
+					}
+				}
+			}
+
+			return type;
 		}
 
 		public override string GetAccessorName()

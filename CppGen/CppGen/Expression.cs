@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace CppGen
@@ -99,7 +99,7 @@ namespace CppGen
 		}
 
 		// Returns the resolved type as a C++ type
-		public DataType.CppType GetResolvedCppType()
+		public virtual DataType.CppType GetResolvedCppType()
 		{
 			return ResolvedTypeCpp != DataType.CppType.Void ? ResolvedTypeCpp : ResolvedType.cppType;
 		}
@@ -397,6 +397,16 @@ namespace CppGen
 		public override bool ApplyType(ResolveScope scope, DataType type)
 		{
 			return ResolvedType.Assign(type, Func, Line);
+		}
+
+		public override DataType.CppType GetResolvedCppType()
+		{
+			if (ValueType == Token.Type.String)
+				return DataType.CppType.StringType;
+			else if (ResolvedType == null || ResolvedType.GetAssignments(DataType.Type.Real).Count == 0)
+				return DataType.CppType.IntType;
+			else
+				return DataType.CppType.RealType;
 		}
 
 		public override string ToCpp(ResolveScope scope)

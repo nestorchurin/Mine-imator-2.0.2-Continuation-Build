@@ -103,6 +103,7 @@ namespace CppProject
 
 		QHash<IntType, Qt::CursorShape> cursorMap;
 		QHash<IntType, IntType> keyMap;
+		QHash<IntType, IntType> scanCodeMap;
 
 		// Keyboard key state, pressed/released is reset after each step
 		struct KeyState
