@@ -12,3 +12,5 @@ Installer/Linux/Mine-imator/usr/local/bin/
 build-dir/
 Logs/
 CppProject/build/
+*.flatpak
+repo/
