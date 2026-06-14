@@ -64,5 +64,5 @@ modules:
       - install -p -m 644 GmProject/options/mac/icon512.png /app/share/icons/hicolor/512x512/apps/com.nestor_churin.MineImator.png
     sources:
       - type: git
-        url: https://github.com/mbandersmc/Mine-imator-2.0.2-Continuation-Build.git
+        url: https://github.com/nestorchurin/Mine-imator-2.0.2-Continuation-Build-Linux.git
         branch: linux-port
