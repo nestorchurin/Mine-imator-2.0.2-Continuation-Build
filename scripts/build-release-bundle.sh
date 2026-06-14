@@ -9,9 +9,9 @@ if ! command -v flatpak-builder &> /dev/null; then
     exit 1
 fi
 
-# We build from the production manifest com.nestor_churin.MineImator.yml
-# which pulls from the GitHub repository to guarantee build repeatability.
-MANIFEST="com.nestor_churin.MineImator.yml"
+# We build from the local manifest com.nestor_churin.MineImator.local.yml
+# which builds using local source files and doesn't require downloading repository sources.
+MANIFEST="com.nestor_churin.MineImator.local.yml"
 
 echo "--> Building Flatpak from manifest: $MANIFEST..."
 flatpak-builder --force-clean --repo=repo build-dir "$MANIFEST"
